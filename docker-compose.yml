@@ -1,0 +1,39 @@
+version: "3"
+
+networks:
+  default:
+    external: true
+    name: krilog
+
+volumes:
+  certs:
+    external: true
+    name: elk_certs
+
+services:
+  krilog:
+    image: sysnetcz/krilog:${KRILOG_VERSION}
+    container_name: krilog
+    volumes:
+      - ./data:${KRILOG_DATA_DIRECTORY}
+      - certs:${ELK_CERTS_DIR}
+    networks:
+      default:
+        aliases:
+          - krilog
+    ports:
+      - ${KRILOG_PORT}:8000
+    environment:
+      - APP_SECRET_KEY=${APP_SECRET_KEY}
+      - DEBUG=${DEBUG}
+      - TZ=Europe/Prague
+      - KRILOG_DATA_DIRECTORY=${KRILOG_DATA_DIRECTORY}
+      - ELK_URL=${ELK_URL}
+      - ELK_USERNAME=${ELK_USERNAME}
+      - ELK_PASSWORD=${ELK_PASSWORD}
+      - ELK_CERTS_DIR=${ELK_CERTS_DIR}
+      - ELK_VERIFY_CERTS=${ELK_VERIFY_CERTS}
+      - TWITTER_CONSUMER_KEY=${TWITTER_CONSUMER_KEY}
+      - TWITTER_CONSUMER_SECRET=${TWITTER_CONSUMER_SECRET}
+      - TWITTER_ACCESS_TOKEN=${TWITTER_ACCESS_TOKEN}
+      - TWITTER_ACCESS_TOKEN_SECRET=${TWITTER_ACCESS_TOKEN_SECRET}

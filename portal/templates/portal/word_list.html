@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% load bootstrap5 %}
+
+{% block content%}
+
+    <div class="card">
+
+        <div class="border-bottom title-part-padding">
+            <h2 class="card-title mb-0">
+                Seznam pojmů
+            </h2>
+        </div>
+        <div class="card-body">
+          {% if w_list|length == 0 %}
+              <p>Seznam zatím neodbashuje žádné pojmy.</p>
+          {% else %}
+              <p>Počet pojmů: {{w_list|length}}</p>
+              <div class="table-responsive">
+                <table id="word_list"
+                  class="display
+                    table table-bordered
+                    m-b-0
+                    toggle-arrow-tiny
+                  "
+                  data-filtering="true"
+                  data-paging="true"
+                  data-sorting="true"
+                  data-paging-size="5"
+                >
+                  <thead>
+                    <tr class="table-success">
+                        <th>Název</th>
+                        <th>Typ</th>
+                        <th>Synonyma</th>
+                        <th>Skupina pojmů</th>
+                        <th>Tvary</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for item in w_list %}
+                        <tr>
+                            <td>{{item.name}}</td>
+                            <td>{{item.type.all|join:", "}}</td>
+                            <td>{{item.synonyms.all|join:", "}}</td>
+                            <td>{{item.family}}</td>
+                            <td>{{item.declention}}</td>
+                        </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+          {% endif %}
+        </div>
+    </div>
+
+{% endblock content%}
+
+{%block scripts_block%}
+
+<script>
+    $(document).ready(function () {
+        $('#word_list').DataTable({
+            order: [[0, 'asc']],
+            paging: true,
+            ordering: true,
+            info: true,
+            pagingType: 'full_numbers',
+            "language": {
+                "paginate": {
+                  "first": "První",
+                  "previous": "Předchozí",
+                  "next": "Následující",
+                  "last": "Poslední"
+                },
+                "search": "Hledat:",
+                "info": "Poptávky _START_ až _END_ z celkem _TOTAL_ výsledků",
+                "emptyTable": "Žádná dostupná data",
+                "lengthMenu": "Ukázat _MENU_ výsledků",
+                "infoFiltered": "(vyfiltrováno z celkem _MAX_ výsledků)",
+                "thousands": " ",
+              }
+        });
+    });
+</script>
+
+  {% endblock scripts_block %}

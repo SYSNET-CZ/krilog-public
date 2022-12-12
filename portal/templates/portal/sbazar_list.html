@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% load bootstrap5 %}
+
+{% block content%}
+<div class="row">
+    <div class="col-7">
+        <div class="card">
+            <div class="d-flex border-bottom title-part-padding align-items-center">
+              <div>
+                <h2 class="card-title mb-0">
+                    {{headline}} inzeráty
+                </h2>
+              </div>
+              <div class="ms-auto flex-shrink-0">
+                <form method="POST">
+                    {% csrf_token %}
+                    <button type="submit" name="synchronize" class="btn btn-primary waves-effect waves-light button-around">
+                      Synchronizace všech inzerátů {{headline}}
+                    </button>
+                </form>
+              </div>
+            </div>
+            <div class="card-body">
+<!--                <p class="krilog-margin-bottom"></p>-->
+                <form method="POST">
+                    {% csrf_token %}
+                    {% bootstrap_form form layout="horizontal" %}
+                    {% buttons %}
+                        <button type="submit" name="filter" class="btn btn-success button-around">Filtrovat</button>
+                        <button type="submit" name="synchro_choose" class="btn btn-primary button-around">Synchronizace vybraných</button>
+                    {% endbuttons %}
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-5">
+        <div class="card">
+            <div class="card-body">
+                <p>
+                    {{text.sBazar_Bazos_text|safe}}
+                </p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+    <div class="card">
+        <div class="border-bottom title-part-padding">
+            <h2 class="card-title mb-0">
+                Nalezené příspěvky / inzeráty
+            </h2>
+        </div>
+
+        <div class="card-body">
+            <div class="tab-pane p-3 active" id="navpill-111" role="tabpanel">
+                  {% if offers_list|length == 0 %}
+                      <p>Žádné nabídky.</p>
+                  {% else %}
+                      <p>{{offers_list|length}} nabídek</p>
+                      <div class="table-responsive">
+                        <table id="sbazar_list"
+                          class="display
+                            table table-bordered
+                            m-b-0
+                            toggle-arrow-tiny
+                          "
+                          data-filtering="true"
+                          data-paging="true"
+                          data-sorting="true"
+                          data-paging-size="5"
+                        >
+                          <thead>
+                            <tr class="table-success">
+                              <th>Název</th>
+                              <th>Text</th>
+                              <th>Cena</th>
+                              <th>Počet</th>
+                              <th>Město</th>
+                              <th>Zdroj</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% for item in offers_list %}
+                                <tr>
+                                   <td>{{item.name_offer}}</td>
+                                   <td>
+                                        <a href="{{item.url}}" class="
+                                            btn btn-light btn-sm
+                                            d-inline-flex
+                                            align-items-center
+                                            justify-content-center"
+                                            target="_blank"
+                                            data-toggle="tooltip" data-bs-placement="bottom" title="{{item.fulltext}}" data-bs-original-title="">
+                                            {{item.fulltext|truncatewords:10}}
+                                        </a>
+                                   </td>
+                                   <td>{% if item.price %}{{item.price}} {% endif %} {{item.currency}}</td>
+                                   <td>{% if item.quantity %}{{item.quantity}} {% endif %}{{item.units}}</td>
+                                   <td>
+                                        <span {% if item.locality.coordinates_LAT and item.locality.coordinates_LON %}
+                                              style="color: forestgreen;"
+                                              data-toggle="tooltip" data-bs-placement="bottom" title="{{item.locality.coordinates_LAT}}, {{item.locality.coordinates_LON}}" data-bs-original-title=""
+                                              {% endif%}
+                                              >
+<!--                                            {{item.locality.region}}-->
+                                            {% if item.locality.region and item.locality.city %}{%endif%} {{item.locality.city}}
+<!--                                            {{item.locality.city}}{% if item.locality.street %}, {{item.locality.street}}{% endif%}-->
+                                        </span>
+                                   </td>
+                                   <td>{{item.source}}</td>
+                                </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                      </div>
+                  {% endif %}
+            </div>
+
+        </div>
+
+
+    </div>
+
+{% endblock content%}
+
+{%block scripts_block%}
+
+    <script>
+        $(document).ready(function () {
+            $('#sbazar_list').DataTable({
+                // order: [[1, 'desc']],
+                paging: true,
+                ordering: true,
+                info: true,
+                pagingType: 'full_numbers',
+                "language": {
+                    "paginate": {
+                      "first": "První",
+                      "previous": "Předchozí",
+                      "next": "Následující",
+                      "last": "Poslední"
+                    },
+                    "search": "Hledat:",
+                    "info": "Poptávky _START_ až _END_ z celkem _TOTAL_ výsledků",
+                    "emptyTable": "Žádná dostupná data",
+                    "lengthMenu": "Ukázat _MENU_ výsledků",
+                    "infoFiltered": "(vyfiltrováno z celkem _MAX_ výsledků)",
+                    "thousands": " ",
+                  }
+            });
+        });
+    </script>
+
+  {% endblock scripts_block %}

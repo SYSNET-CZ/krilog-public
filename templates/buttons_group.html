@@ -1,0 +1,24 @@
+<div class="btn-group">
+    <a href="{{ url_edit }}" class="text-light-success pe-2">
+        <button type="button" class="
+            btn btn-success btn-circle btn-sm
+            d-inline-flex
+            align-items-center
+            justify-content-center
+          " data-toggle="tooltip" data-bs-placement="bottom" title="Upravit" data-bs-original-title="">
+          <i data-feather="edit-2" class="feather-sm"></i>
+        </button>
+    </a>
+    {% if item.active %}
+        <a href="{{ url_delete}}" class="deletedoc">
+            <button type="button" class="
+                btn btn-danger btn-circle btn-sm
+                d-inline-flex
+                align-items-center
+                justify-content-center
+              " data-toggle="tooltip" data-bs-placement="bottom" title="Deaktivovat" data-bs-original-title="">
+              <i data-feather="trash-2" class="feather-sm"></i>
+            </button>
+        </a>
+    {% endif%}
+</div>

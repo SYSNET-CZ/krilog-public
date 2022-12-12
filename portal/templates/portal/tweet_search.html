@@ -1,0 +1,281 @@
+{% extends "base.html" %}
+
+{% load bootstrap5 %}
+
+{% block content%}
+
+<div class="row">
+    <div class="col-7">
+        <div class="card">
+                <div class="d-flex border-bottom title-part-padding align-items-center">
+                  <div>
+                    <h2 class="card-title mb-0">
+                        Twitter
+                    </h2>
+                  </div>
+                  <div class="ms-auto flex-shrink-0">
+                        <form method="POST">
+                            {% csrf_token %}
+                            <span style="color: forestgreen;" data-toggle="tooltip" data-bs-placement="bottom"
+                                  title="Synchronizují se data se zdravotnickým a prodejním kontextem."
+                                  data-bs-original-title="">
+                                <button type="submit" name="synchronize" class="btn btn-primary">
+                                    Synchronizace všech příspěvků
+                                </button>
+                            </span>
+
+                        </form>
+                  </div>
+                </div>
+            <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+                    {% bootstrap_field form.word layout="horizontal" %}
+                    {% bootstrap_field form.search layout="horizontal" %}
+                    <div class="row">
+                        <div class="col-6">
+                            {% bootstrap_field form.medical_words layout="inline" %}
+                        </div>
+                        <div class="col-6">
+                            {% bootstrap_field form.sale_words layout="inline" %}
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-6">
+                            {% bootstrap_field form.count layout="vertical" %}
+                        </div>
+                        <div class="col-6">
+                            {% bootstrap_field form.lang layout="vertical" %}
+                        </div>
+                    </div>
+                    {% buttons %}
+                        <button type="submit" class="btn btn-success">Hledat</button>
+                    {% endbuttons %}
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-5">
+        <div class="card">
+            <div class="card-body">
+                <p>
+                    {{text.Twitter_text|safe}}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+    <div class="card">
+      <div class="card-body">
+
+        <!-- Nav tabs -->
+        <ul class="nav nav-pills nav-fill bg-light" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#search" role="tab">
+                    <span>Nalezené příspěvky</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#list" role="tab">
+                    <span>Uložené příspěvky &raquo; {{offers_list|length}} nabídek</span>
+                </a>
+            </li>
+        </ul>
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div class="tab-pane active" id="search" role="tabpanel">
+                <div class="container mt-2">
+                  {% if context|length == 0 %}
+                      <p>Žádné tweety.</p>
+                  {% else %}
+                      <p>Počet příspěvků: {{count}}</p>
+                      <div class="table-responsive">
+                        <table id="tweet_search_list"
+                          class="display
+                            table table-bordered
+                            m-b-0
+                            toggle-arrow-tiny
+                          "
+                          data-filtering="true"
+                          data-paging="true"
+                          data-sorting="true"
+                          data-paging-size="5"
+                        >
+                          <thead>
+                            <tr class="table-success">
+                              <th>Název</th>
+                              <th>Text</th>
+                              <th>Cena</th>
+                              <th>Počet</th>
+                              <th>Město</th>
+                              <th>Zdroj</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% for item in context %}
+                                <tr>
+                                   <td>{% if item.name_offer != "N/A" %}{{item.name_offer}}{% else%}neuvedeno{% endif %}</td>
+                                   <td>
+                                        <a href="{{item.url}}" class="
+                                            btn btn-light btn-sm
+                                            d-inline-flex
+                                            align-items-center
+                                            justify-content-center
+                                          " data-toggle="tooltip" data-bs-placement="bottom" title="{{item.fulltext}}" data-bs-original-title="">
+                                            {{item.fulltext|truncatewords:10}}
+                                        </a>
+                                   </td>
+                                   <td>{% if item.price %}{{item.price}} {{item.currency}}{% else%}neuvedeno{% endif %}</td>
+                                   <td>{% if item.quantity %}{{item.quantity}} {{item.units}}{% else%}neuvedeno{% endif %}</td>
+                                   <td>
+                                        <span {% if item.LAT and item.LON %}
+                                              style="color: forestgreen;"
+                                              data-toggle="tooltip" data-bs-placement="bottom" title="{{item.LAT}}, {{item.LON}}" data-bs-original-title=""
+                                              {% endif%}
+                                              >
+                                            {{item.locality_city}}
+                                        </span>
+                                   </td>
+                                   <td>{{item.source}}</td>
+                                </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                      </div>
+                      <form method="POST">
+                            {% csrf_token %}
+                            <button type="submit" name="save" class="btn btn-primary waves-effect waves-light m-r-5 m-t-5">
+                              Uložit nalezené příspěvky
+                            </button>
+                      </form>
+                  {% endif %}
+
+                </div>
+            </div>
+            <div class="tab-pane" id="list" role="tabpanel">
+               <div class="container mt-2">
+                  {% if offers_list|length == 0 %}
+                      <p>Žádné nabídky.</p>
+                  {% else %}
+                      <p>{{offers_list|length}} nabídek</p>
+                      <div class="table-responsive">
+                        <table id="tweet_list"
+                          class="display
+                            table table-bordered
+                            m-b-0
+                            toggle-arrow-tiny
+                          "
+                          data-filtering="true"
+                          data-paging="true"
+                          data-sorting="true"
+                          data-paging-size="5"
+                        >
+                          <thead>
+                            <tr class="table-success">
+                              <th>Nabízená věc</th>
+                              <th>Datum zadání</th>
+                              <th>Text</th>
+                              <th>Cena</th>
+                              <th>Počet</th>
+                              <th>Město</th>
+                              <th>Zdroj</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% for item in offers_list %}
+                                <tr>
+                                   <td>{% if item.word %}{{item.word}}{% endif%} {% if item.search %}{{item.search}}{% endif%}</td>
+                                   <td>{{item.created|date:"Y/m/d"}}</td>
+                                   <td>
+                                        <a href="{{item.url}}" class="
+                                            btn btn-light btn-sm
+                                            d-inline-flex
+                                            align-items-center
+                                            justify-content-center"
+                                            target="_blank"
+                                            data-toggle="tooltip" data-bs-placement="bottom" title="{{item.fulltext}}" data-bs-original-title="">
+                                            {{item.fulltext|truncatewords:10}}
+                                        </a>
+                                   </td>
+                                   <td>{% if item.price %}{{item.price}} {% endif %} {{item.currency}}</td>
+                                   <td>{% if item.quantity %}{{item.quantity}} {% endif %}{{item.units}}</td>
+                                   <td>
+                                        <span {% if item.locality.coordinates_LAT and item.locality.coordinates_LON %}
+                                              style="color: forestgreen;"
+                                              data-toggle="tooltip" data-bs-placement="bottom" title="{{item.locality.coordinates_LAT}}, {{item.locality.coordinates_LON}}" data-bs-original-title=""
+                                              {% endif%}
+                                              >
+                                            {{item.locality.region}}{% if item.locality.region and item.locality.city %}, {%endif%} {{item.locality.city}}
+<!--                                            {{item.locality.city}}{% if item.locality.street %}, {{item.locality.street}}{% endif%}-->
+                                        </span>
+                                   </td>
+                                   <td>{{item.source}}</td>
+                                </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                      </div>
+                  {% endif %}
+            </div>
+            </div>
+        </div>
+      </div>
+    </div>
+
+{% endblock content%}
+
+{%block scripts_block%}
+
+    <script>
+        $(document).ready(function () {
+            $('#tweet_search_list').DataTable({
+                // order: [[1, 'desc']],
+                paging: true,
+                ordering: true,
+                info: true,
+                pagingType: 'full_numbers',
+                "language": {
+                    "paginate": {
+                      "first": "První",
+                      "previous": "Předchozí",
+                      "next": "Následující",
+                      "last": "Poslední"
+                    },
+                    "search": "Hledat:",
+                    "info": "Poptávky _START_ až _END_ z celkem _TOTAL_ výsledků",
+                    "emptyTable": "Žádná dostupná data",
+                    "lengthMenu": "Ukázat _MENU_ výsledků",
+                    "infoFiltered": "(vyfiltrováno z celkem _MAX_ výsledků)",
+                    "thousands": " ",
+                  }
+            });
+        });
+        $(document).ready(function () {
+            $('#tweet_list').DataTable({
+                order: [[1, 'desc']],
+                paging: true,
+                ordering: true,
+                // columnDefs : [{"targets":1, "type":"de_date"}],
+                info: true,
+                pagingType: 'full_numbers',
+                "language": {
+                    "paginate": {
+                      "first": "První",
+                      "previous": "Předchozí",
+                      "next": "Následující",
+                      "last": "Poslední"
+                    },
+                    "search": "Hledat:",
+                    "info": "Příspěvky _START_ až _END_ z celkem _TOTAL_ výsledků",
+                    "emptyTable": "Žádná dostupná data",
+                    "lengthMenu": "Ukázat _MENU_ výsledků",
+                    "infoFiltered": "(vyfiltrováno z celkem _MAX_ výsledků)",
+                    "thousands": " ",
+                  }
+            });
+        });
+
+    </script>
+
+  {% endblock scripts_block %}

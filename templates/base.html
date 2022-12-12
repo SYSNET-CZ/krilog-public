@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="cs">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>KRILOG</title>
+
+  <link rel="icon" type="image/png" sizes="16x16" href="../static/images/contract.png" />
+
+  <!-- Custom CSS -->
+  <link type="text/css" href="../static/dist/css/style.css" rel="stylesheet" />
+  {#    <link href="../static/disc/css/custom.css" rel="stylesheet" />#}
+  <link href="../static/custom/custom.css" rel="stylesheet" />
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+
+    <![endif]-->
+<!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap4.min.css"/>
+<!--  <link href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet" />-->
+
+
+
+</head>
+
+<body>
+  {% include "preloader.html" %}
+
+  <div id="main-wrapper">
+    {% include "navbar.html" %}
+    {% include "sidebar.html" %}
+
+    <div class="page-wrapper">
+
+      <div class="container-fluid">
+        <!-- Row -->
+        <div class="row">
+          <div class="container-fluid">
+            <div class="row">
+
+              {%block content%}{%endblock%}
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% include "footer.html" %}
+
+    </div>
+
+  </div>
+
+  <!--  -->
+  <!-- All Jquery -->
+
+  <!--  -->
+  <script src="../static/assets/libs/jquery/dist/jquery.min.js"></script>
+  <!-- Bootstrap tether Core JavaScript -->
+  <script src="../static/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- apps -->
+  <script src="../static/dist/js/app.min.js"></script>
+  <!-- fixed sidebar and header -->
+  <script>
+    $(document).ready(function () {
+      $('[data-bs-toggle="tooltip"]').tooltip();
+      $('[data-bs-toggle="modal"]').modal();
+    });
+  </script>
+  <script>
+    $(function () {
+      "use strict";
+      $("#main-wrapper").AdminSettings({
+        Theme: false, // this can be true or false ( true means dark and false means light ),
+        Layout: "vertical",
+        LogoBg: "skin2", // You can change the Value to be skin1/skin2/skin3/skin4/skin5/skin6  skin2
+        NavbarBg: "skin2", // You can change the Value to be skin1/skin2/skin3/skin4/skin5/skin6  skin2
+        SidebarType: "full", // You can change it full / mini-sidebar / iconbar / overlay
+        SidebarColor: "skin6", // You can change the Value to be skin1/skin2/skin3/skin4/skin5/skin6  skin6
+        SidebarPosition: true, // it can be true / false ( true means Fixed and false means absolute )
+        HeaderPosition: true, // it can be true / false ( true means Fixed and false means absolute )
+        BoxedLayout: false, // it can be true / false ( true means Boxed and false means Fluid )
+      });
+    });
+  </script>
+  <script src="../static/dist/js/app-style-switcher.js"></script>
+
+
+  <!-- slimscrollbar scrollbar JavaScript -->
+  <script src="../static/assets/libs/perfect-scrollbar/dist/perfect-scrollbar.jquery.min.js"></script>
+  <script src="../static/assets/extra-libs/sparkline/sparkline.js"></script>
+  <!--Wave Effects -->
+  <script src="../static/dist/js/waves.js"></script>
+  <!--Menu sidebar -->
+  <script src="../static/dist/js/sidebarmenu.js"></script>
+  <!--Other JavaScript -->
+  <script src="../static/dist/js/feather.min.js"></script>
+  <script src="../static/dist/js/custom.min.js"></script>
+  <script src="../static/assets/libs/bootstrap/dist/js/bootstrap.bundle.js"></script>
+  <script src="../static/assets/libs/bootstrap/dist/js/bootstrap.min.js"></script>
+
+  <!--Page up button - JavaScript -->
+   <script src="../static/custom/custom.js"></script>
+
+  <!-- Jquery -->
+<!--  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>-->
+<!--  <script src="https://code.jquery.com/jquery-3.5.1.js"></script>-->
+  <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js"></script>
+
+  {%block scripts_block%}
+  {%endblock%}
+</body>
+
+</html>

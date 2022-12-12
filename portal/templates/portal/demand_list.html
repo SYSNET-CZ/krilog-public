@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% load bootstrap5 %}
+
+{% block content%}
+
+    <div class="card">
+
+        <div class="border-bottom title-part-padding">
+            <h2 class="card-title mb-0">
+                Seznam poptávek
+            </h2>
+        </div>
+        <div class="card-body">
+          {% if d_list|length == 0 %}
+              <p>Seznam zatím neobsahuje žádné poptávky.</p>
+          {% else %}
+              <p>Počet poptávek: {{ count }}</p>
+              <div class="table-responsive">
+                <table id="demand_list"
+                  class="display
+                    table table-bordered
+                    m-b-0
+                    toggle-arrow-tiny"
+                  style="width:100%">
+                  <thead>
+                    <tr class="table-success">
+                        <th>Požadavek</th>
+                        <th>Datum zadání</th>
+                        <th>Množství</th>
+                        <th>Organizace</th>
+                        <th>Lokalita</th>
+                        <th>Akce</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for item in d_list %}
+                        {% url 'portal:edit_demand' identifier=item.id as url_edit %}
+                        {% url 'portal:deactivate_demand' identifier=item.id as url_delete %}
+                        <tr class="{% if item.active == False %}bg-light text-muted{% endif%}">
+                            <td>{{item.word}}</td>
+                            <td>{{item.created|date:"Y/m/d"}}</td>
+                            <td>{{item.quantity}}</td>
+                            <td>{{item.organization}}</td>
+                            <td>
+                                <span {% if item.locality.coordinates_LAT and item.locality.coordinates_LAT %}
+                                      style="color: forestgreen;"
+                                      data-toggle="tooltip" data-bs-placement="bottom" title="{{item.locality.coordinates_LAT}}, {{item.locality.coordinates_LON}}" data-bs-original-title=""
+                                      {% endif%}
+                                      >
+                                    {{item.locality.city}}{% if item.locality.street %}, {{item.locality.street}}{% endif%}
+                                </span>
+                            </td>
+                            <td>
+                                {% include "buttons_group.html" %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+<!--                <div class="pagination">-->
+<!--                    <span class="step-links">-->
+<!--                        {% if d_list.has_previous %}-->
+<!--                            <a href="?page=1">&laquo;&laquo;</a>-->
+<!--                            <a href="?page={{ d_list.previous_page_number }}">Předchozí</a>-->
+<!--                        {% endif %}-->
+
+<!--                        <span class="current">-->
+<!--                            Strana {{ d_list.number }} z celkem {{ d_list.paginator.num_pages }}.-->
+<!--                        </span>-->
+
+<!--                        {% if d_list.has_next %}-->
+<!--                            <a href="?page={{ d_list.next_page_number }}">Následující</a>-->
+<!--                            <a href="?page={{ d_list.paginator.num_pages }}">&raquo;&raquo;</a>-->
+<!--                        {% endif %}-->
+<!--                    </span>-->
+<!--                </div>-->
+
+              </div>
+          {% endif %}
+        </div>
+    </div>
+
+
+{% endblock content%}
+
+{%block scripts_block%}
+
+<script>
+    $(document).ready(function () {
+        $('#demand_list').DataTable({
+            order: [[1, 'desc']],
+            paging: true,
+            ordering: true,
+            info: true,
+            pagingType: 'full_numbers',
+            "language": {
+                "paginate": {
+                  "first": "První",
+                  "previous": "Předchozí",
+                  "next": "Následující",
+                  "last": "Poslední"
+                },
+                "search": "Hledat:",
+                "info": "Poptávky _START_ až _END_ z celkem _TOTAL_ výsledků",
+                "emptyTable": "Žádná dostupná data",
+                "lengthMenu": "Ukázat _MENU_ výsledků",
+                "infoFiltered": "(vyfiltrováno z celkem _MAX_ výsledků)",
+                "thousands": " ",
+              }
+        });
+    });
+</script>
+
+  {% endblock scripts_block %}

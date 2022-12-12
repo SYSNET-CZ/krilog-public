@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% load bootstrap5 %}
+
+{% block content%}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="border-bottom title-part-padding">
+                <h2 class="card-title mb-0">
+                    Nová poptávka
+                </h2>
+            </div>
+            <div class="card-body">
+
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {% bootstrap_form form layout="horizontal" %}
+                    {% buttons %}
+                        <button type="submit" class="btn btn-success">Vložit dokument</button>
+                        <button type="submit" name="cancel" class=" btn btn-danger" formnovalidate>Zrušit</button>
+                    {% endbuttons %}
+                </form>
+                <h5 class="mt-3">Formát vstupního dat</h5>
+                <table
+                   class="
+                    table table-bordered
+                    m-b-0
+                    toggle-arrow-tiny
+                  ">
+                  <thead>
+                    <tr class="table-success">
+                      <th>Organizace</th>
+                      <th>Lokalita</th>
+                      <th>Požadavek</th>
+                      <th>Typ</th>
+                      <th>Množství</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                        <tr>
+                           <td>Nemocnice Strakonice a.s.</td>
+                           <td></td>
+                           <td>Rouška</td>
+                           <td>chirurgická</td>
+                           <td>10000</td>
+                        </tr>
+                        <tr>
+                           <td>Fakultní nemocnice U Svaté Anny</td>
+                           <td>Brno, Pekařská 664/53</td>
+                           <td>Respirátor</td>
+                           <td></td>
+                           <td>900</td>
+                        </tr>
+                        <tr>
+                           <td>...</td>
+                           <td>...</td>
+                           <td>...</td>
+                           <td>...</td>
+                           <td>...</td>
+                        </tr>
+                  </tbody>
+                </table>
+
+                <p><strong>První řádek</strong> obsahuje názvy sloupců. Dodržujte, prosím, pořadí.</p>
+                <p><strong>Každý řádek</strong> (kromě prvního) představuje <strong>jednu poptávku</strong>.</p>
+                <p><strong>Lokalitu</strong> není nutné vyplňovat, pokud je alespoň město uvedeno v názvu organizace.
+                    Poté bude dopočítána orientační lokalita. V případě, že nebude možné lokalitu dopočítat automaticky,
+                    je možné ji následně ručně upravit u dané poptávky.
+                </p>
+                <p><strong>Požadavek</strong> musí odpovídat pojmům ve slovníku. Pokud poptávky obsahují nové pojmy,
+                    je nutné tyto nejdříve vložit do slovníku.
+                </p>
+                <p><strong>Typ</strong> je nepovinné pole.</p>
+                <p><strong>Množství</strong> je číselné pole bez formátování (žádné mezery, bez oddělovačů tisíců apod.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content%}
+

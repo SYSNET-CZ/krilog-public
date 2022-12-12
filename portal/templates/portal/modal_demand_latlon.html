@@ -1,0 +1,21 @@
+
+<div class="modal fade" id="demandLatlonModal{{demand_id}}" role="dialog" tabindex="-1"
+     aria-labelledby="vertical-center-modal" aria-hidden="true">
+  <div class="modal-dialog modal-md" role="document">
+    <div class="modal-content modal-filled bg-light-danger">
+
+      <div class="modal-body p-4">
+        <div class="text-center text-dark">
+          <i data-feather="danger" class="feather-md text-danger"></i>
+          <p class="mt-3">
+            Vybraná poptávka neobsahuje lokalizaci. <br>
+          </p>
+          <a href="{% url 'portal:demand_list' %}">
+            <input id="confirm-delete-button" name="confirm" type="submit" class="btn btn-danger my-2" value="Ano">
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

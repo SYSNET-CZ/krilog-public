@@ -1,0 +1,36 @@
+<nav aria-label="Page navigation example">
+  <ul class="pagination">
+        {% if page_number > 1 %}
+            <li class="page-item">
+              <a class="page-link" href="{{ url_list }}?page=1" aria-label="First">
+                <span aria-hidden="true">&laquo;</span>
+                <span class="sr-only">1</span>
+              </a>
+            </li>
+            {% if page_number|add:"-1" > 2 %}
+                <li class="page-item"><a class="page-link" href="{{ url_list }}?page={{ page_number|add:"-2" }}">...</a></li>
+            {% endif %}
+            {% if page_number|add:"-1" > 1 %}
+                <li class="page-item"><a class="page-link" href="{{ url_list }}?page={{ page_number|add:"-1" }}">{{ page_number|add:"-1" }}</a></li>
+            {% endif %}
+        {% endif %}
+
+        <li class="page-item"><a class="page-link" href="{{ url_list }}?page={{ page_number }}"><u>{{ page_number }}</u></a></li>
+
+        {% if pages > page_number|add:"1" %}
+            <li class="page-item"><a class="page-link" href="{{ url_list }}?page={{ page_number|add:"1" }}">{{ page_number|add:"1" }}</a></li>
+        {% endif %}
+        {% if pages > page_number|add:"2" %}
+            <li class="page-item"><a class="page-link" href="{{ url_list }}?page={{ page_number|add:"2" }}">...</a></li>
+        {% endif %}
+        {% if pages > page_number %}
+            <li class="page-item">
+              <a class="page-link" href="{{ url_list }}?page={{ pages }}" aria-label="Last">
+                <span class="sr-only">{{ pages }}</span>
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+        {% endif %}
+
+  </ul>
+</nav>

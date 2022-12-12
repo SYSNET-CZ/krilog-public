@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% load bootstrap5 %}
+
+{% block content%}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="border-bottom title-part-padding">
+                <h2 class="card-title mb-0">
+                    Upravit poptávku
+                </h2>
+            </div>
+            <div class="card-body">
+
+                <form method="POST">
+                    {% csrf_token %}
+                    {% bootstrap_form form layout="horizontal" %}
+                    <h4>Lokalita</h4>
+                    {% bootstrap_form form_loc layout="horizontal" %}
+                    {% buttons %}
+                        <button type="submit" class="btn btn-success">Uložit</button>
+                        <button type="submit" name="cancel" class=" btn btn-danger" formnovalidate>Zrušit</button>
+                    {% endbuttons %}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content%}
+
+

@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+
+{% load bootstrap5 %}
+
+{% block content%}
+
+<div class="row">
+    <div class="col-6">
+        <div class="card">
+            <div class="border-bottom title-part-padding">
+                <h2 class="card-title mb-0">
+                    Základní mapa
+                </h2>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+                    {% bootstrap_form form layout="horizontal" %}
+                    {% buttons %}
+                      <div class="text-center">
+                        <button type="submit" class="btn btn-success mb-3">
+                            Filtrovat
+                        </button>
+                      </div>
+                    {% endbuttons %}
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="border-bottom title-part-padding">
+                        <h3 class="card-title mb-0">
+                            Nabídky bez lokalizace
+                        </h3>
+                    </div>
+
+                    <div class="card-body">
+                      {% if count_o_no_loc == 0 %}
+                          <p>Seznam zatím neobsahuje žádné nabídky.</p>
+                      {% else %}
+                          <p>Počet nabídek bez lokalizace: {{count_o_no_loc}}</p>
+                            {% for item in offers_no_lonlat %}
+                                <a href="{{item.url}}" class="
+                                    btn btn-info btn-sm
+                                    d-inline-flex
+                                    align-items-center
+                                    justify-content-center mb-2"
+                                    target="_blank"
+                                    data-toggle="tooltip" data-bs-placement="bottom" title="{{item.fulltext}}" data-bs-original-title="">
+                                    {{item.fulltext|truncatewords:4}}
+                                </a>
+                            {% endfor %}
+                      {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% if demand_no_latlon %}
+                <div class="col-12">
+                    <div class="card bg-danger">
+                        <div class="card-body">
+                          <span class="text-light">
+                              <strong>Vybraná poptávka neobsahuje lokalizaci.</strong>
+                          </span>
+                          <a href="{% url 'portal:edit_demand' identifier=demand_id%}">
+                              {% bootstrap_button "Doplnit informace k poptávce" button_type="button" button_class="btn-light mt-3" %}
+                          </a>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+
+        </div>
+    </div>
+</div>
+
+<div class="card col-12">
+    <div class="d-flex border-bottom title-part-padding align-items-center">
+      <div>
+        <p>Nalezeno {{count_o}} nabídek a {{count_d}} poptávek.</p>
+      </div>
+      <div class="ms-auto flex-shrink-0">
+        <p>
+            <i data-feather="alert-circle" class="feather-sm text-info me-1 ms-1"></i>
+            Mapa zobrazuje pouze přibližné lokality. Nabídky ani poptávky většinou neobsahují přesnou adresu.</p>
+      </div>
+    </div>
+
+    <div class="card-body">
+        <div id="map_basic" style="height:90vh;width:100%;"></div>
+    </div>
+</div>
+
+
+
+{% endblock content%}
+
+{%block scripts_block%}
+
+<script src='../static/assets/extra-libs/leaflet/leaflet.js' type="text/javascript"></script>
+<script src='../static/assets/extra-libs/leaflet/Control.MiniMap.min.js' type="text/javascript"></script>
+<script src='../static/assets/extra-libs/leaflet-markerClusters/leaflet.markercluster.js'></script>
+
+<link rel="stylesheet" href='../static/assets/extra-libs/leaflet/leaflet.css'>
+<link rel="stylesheet" href='../static/assets/extra-libs/leaflet/Control.MiniMap.min.css' type="text/css">
+<link rel="stylesheet" href='../static/assets/extra-libs/leaflet-markerClusters/MarkerCluster.css' type="text/css">
+<link rel="stylesheet" href='../static/assets/extra-libs/leaflet-markerClusters/MarkerCluster.Default.css' type="text/css">
+
+<script type="text/javascript">
+    var map, markers;
+    var fullGeojson_demand = {{ d_json | safe }};
+    var fullGeojson_offer = {{ o_json | safe }};
+
+    console.log(fullGeojson_demand);
+    console.log(fullGeojson_offer);
+
+    function initMap() {
+      var center = [-33.8650, 151.2094];
+      var openStreetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          id: "mapbox.openstreet",
+          attribution: '&copy; <a href="http://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>',
+          minZoom: 5,
+          maxZoom: 19
+        }),
+        mapyZakladni = L.tileLayer('http://mapserver.mapy.cz/base-m/{z}-{x}-{y}', {
+          id: "mapbox.base",
+          attribution: '&copy; <a href="https://www.seznam.cz" target="_blank" rel="noopener">Seznam.cz, a.s.</a>',
+          minZoom: 5,
+          maxZoom: 19
+        }),
+        mapyLetecke = L.tileLayer('http://mapserver.mapy.cz/ophoto-m/{z}-{x}-{y}', {
+          id: "mapbox.photo",
+          attribution: '3. 7. 2015, &copy; <a href="https://www.seznam.cz" target="_blank" rel="noopener">Seznam.cz, a.s.</a>',
+          minZoom: 5,
+          maxZoom: 20
+        });
+
+        var mapBounds = new L.LatLngBounds(
+        new L.LatLng(48.4, 12.0),
+        new L.LatLng(51.2, 19));
+
+      // Create the map
+      map = L.map("map_basic", {
+        center: new L.LatLng(50, 15.5),
+        // maxBounds: mapBounds,
+        zoom: 7,
+        layers: [openStreetMap]
+      });
+
+      var openStreetMap2 = new L.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        minZoom: 0,
+        maxZoom: 13,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'
+      });
+
+      var miniMap = new L.Control.MiniMap(openStreetMap2, {
+        toggleDisplay: true
+      }).addTo(map);
+
+      //Base layers definition and addition
+      var baseLayers = {
+        'OpenStreetMap': openStreetMap,
+        'Mapy.cz - Z&aacute;kladn&iacute;': mapyZakladni,
+        'Mapy.cz - Leteck&aacute;': mapyLetecke
+      };
+
+      //Add baseLayers to map as control layers
+      L.control.layers(baseLayers).addTo(map);
+      L.control.scale({
+        imperial: false,
+        maxWidth: 300
+      }).addTo(map);
+
+      var greenIcon = new L.Icon({
+          iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+          shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+          iconSize: [25, 41],
+          iconAnchor: [12, 41],
+          popupAnchor: [1, -34],
+          shadowSize: [41, 41]
+        });
+
+      markers = L.markerClusterGroup({ disableClusteringAtZoom: 22 });
+
+      for (var i = 0; i < fullGeojson_demand.length; i++){
+        var markerData = fullGeojson_demand[i];
+
+        var lon = markerData.locality.coordinates_LON;
+        var lat = markerData.locality.coordinates_LAT;
+        var popupText = markerData.organization;
+
+        var markerLocation = new L.LatLng(lat, lon);
+        var marker = new L.Marker(markerLocation, {icon: greenIcon});
+        marker.bindPopup(popupText)
+        markers.addLayer(marker);
+      }
+
+      map.addLayer(markers);
+
+      markers_o = L.markerClusterGroup({ disableClusteringAtZoom: 22 });
+
+      for (var i = 0; i < fullGeojson_offer.length; i++){
+        var markerData = fullGeojson_offer[i];
+
+        var lon = markerData.locality.coordinates_LON;
+        var lat = markerData.locality.coordinates_LAT;
+        var popupText = markerData.fulltext;
+        var popupUrl = (markerData.url) ?
+          "<a href='link' target='_blank'>Zobrazit detail</a>"
+                  .replace('link', markerData.url) : "";
+
+        var markerLocation = new L.LatLng(lat, lon);
+        var marker = new L.Marker(markerLocation);
+        marker.bindPopup(popupText + popupUrl)
+        markers_o.addLayer(marker);
+      }
+
+      map.addLayer(markers_o);
+
+
+    };
+
+    $(document).ready(function () {
+      initMap();
+    });
+  </script>
+  {% endblock scripts_block %}

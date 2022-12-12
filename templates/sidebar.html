@@ -1,0 +1,175 @@
+<aside class="left-sidebar">
+<!-- Sidebar scroll-->
+<div class="scroll-sidebar">
+  <!-- Sidebar navigation-->
+  <nav class="sidebar-nav">
+
+{#        #}
+{#        Dokumenty-------------------------------------#}
+{#        #}
+    <ul id="sidebarnav">
+        <li class="nav-small-cap">
+        <i class="mdi mdi-dots-horizontal"></i>
+        <span class="hide-menu">Aplikace</span>
+      </li>
+
+    {#        Nabídky#}
+      <li class="sidebar-item">
+        <a
+          class="sidebar-link has-arrow waves-effect waves-dark"
+          href="javascript:void(0)"
+          aria-expanded="false"
+        >
+          <i data-feather="list" class="feather-sm me-1 ms-1"></i>
+          <span class="hide-menu">Nabídky</span>
+        </a>
+        <ul aria-expanded="false" class="collapse first-level">
+          <li class="sidebar-item">
+            <a href="{% url "portal:offer_list" %}" class="sidebar-link">
+              <i class="mdi mdi-adjust"></i>
+              <span class="hide-menu"> Všechny nabídky </span>
+            </a>
+          </li>
+          <li class="sidebar-item">
+            <a href="{% url "portal:tweet_list" %}" class="sidebar-link">
+              <i class="mdi mdi-adjust"></i>
+              <span class="hide-menu"> Twitter </span>
+            </a>
+          </li>
+          <li class="sidebar-item">
+            <a href="{% url 'portal:sbazar_list' %}" class="sidebar-link">
+              <i class="mdi mdi-adjust"></i>
+              <span class="hide-menu"> Sbazar </span>
+            </a>
+          </li>
+          <li class="sidebar-item">
+            <a href="{% url 'portal:bazos_list' %}" class="sidebar-link">
+              <i class="mdi mdi-adjust"></i>
+              <span class="hide-menu"> Bazoš </span>
+            </a>
+          </li>
+
+        </ul>
+      </li>
+
+    {#        Poptávky#}
+      <li class="sidebar-item">
+        <a
+          class="sidebar-link has-arrow waves-effect waves-dark"
+          href="javascript:void(0)"
+          aria-expanded="false"
+        >
+          <i data-feather="command" class="feather-sm me-1 ms-1"></i>
+          <span class="hide-menu">Poptávky</span>
+        </a>
+        <ul aria-expanded="false" class="collapse first-level">
+          <li class="sidebar-item">
+            <a href="{% url "portal:demand_list" %}" class="sidebar-link">
+              <i class="mdi mdi-adjust"></i>
+              <span class="hide-menu"> Seznam poptávek </span>
+            </a>
+          </li>
+          <li class="sidebar-item">
+            <a href="{% url 'portal:new_demand' %}" class="sidebar-link">
+              <i class="mdi mdi-adjust"></i>
+              <span class="hide-menu"> Nová poptávka </span>
+            </a>
+          </li>
+          <li class="sidebar-item">
+            <a href="{% url "portal:new_demand_plus" %}" class="sidebar-link">
+              <i class="mdi mdi-adjust"></i>
+              <span class="hide-menu"> Nové hromadně  </span>
+            </a>
+          </li>
+        </ul>
+      </li>
+
+    {#        Mapa#}
+      <li class="sidebar-item">
+        <a
+          href="{% url 'maps:basic_map' %}"
+          class="sidebar-link"
+          >
+          <i data-feather="map" class="feather-sm me-1 ms-1"></i>
+
+          <span class="hide-menu">
+            Mapa
+          </span>
+        </a>
+      </li>
+      </ul>
+
+
+{#        #}
+{#        Číselníky ---------------------------------------------#}
+{#        #}
+
+    <ul id="sidebarnav">
+      <li class="nav-small-cap">
+        <i class="mdi mdi-dots-horizontal"></i>
+        <span class="hide-menu">Slovník pojmů</span>
+      </li>
+      <li class="sidebar-item">
+        <a
+          href="{% url 'portal:word_list' %}"
+          class="sidebar-link"
+          >
+          <i data-feather="book-open" class="feather-sm me-1 ms-1"></i>
+
+          <span class="hide-menu">
+            Seznam pojmů
+          </span></a
+        >
+      </li>
+      <li class="sidebar-item">
+        <a
+          href="{% url 'portal:new_word' %}"
+          class="sidebar-link"
+          >
+          <i data-feather="plus-circle" class="feather-sm me-1 ms-1"></i>
+
+          <span class="hide-menu">
+            Nový pojem
+          </span></a
+        >
+      </li>
+
+    </ul>
+
+{#        #}
+{#        Analytická sekce ---------------------------------------------#}
+{#        #}
+
+    <ul id="sidebarnav">
+      <li class="nav-small-cap">
+        <i class="mdi mdi-dots-horizontal"></i>
+        <span class="hide-menu">Administrátorká sekce</span>
+      </li>
+      <li class="sidebar-item">
+        <a
+          href="{% url 'admin:index' %}"
+          class="sidebar-link"
+          >
+          <i data-feather="edit" class="feather-sm me-1 ms-1"></i>
+
+          <span class="hide-menu">
+            Vstup pro admina
+          </span></a>
+      </li>
+      <li class="sidebar-item">
+        <a href= "{% url 'portal:elasticsearch' %}"
+          class="sidebar-link">
+          <i data-feather="server" class="feather-sm me-1 ms-1"></i>
+
+          <span class="hide-menu">
+            Synchronizace ELK
+          </span></a>
+      </li>
+
+    </ul>
+
+  </nav>
+  <!-- End Sidebar navigation -->
+</div>
+<!-- End Sidebar scroll-->
+</aside>

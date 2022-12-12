@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% load bootstrap5 %}
+
+{% block content%}
+
+    <div class="card">
+
+        <div class="border-bottom title-part-padding">
+            <h2 class="card-title mb-0">
+                Seznam nabídek
+            </h2>
+        </div>
+        <div class="card-body">
+          {% if o_list|length == 0 %}
+              <p>Seznam zatím neobsahuje žádné nabídky.</p>
+          {% else %}
+              <p>Počet nabídek: {{count}}</p>
+              <div class="table-responsive">
+                <table id="offer_list"
+                  class="display
+                    table table-bordered
+                    m-b-0
+                    toggle-arrow-tiny
+                  "
+                  data-filtering="true"
+                  data-paging="true"
+                  data-sorting="true"
+                  data-paging-size="5"
+                >
+                  <thead>
+                    <tr class="table-success">
+                        <th>Nabízená věc</th>
+                        <th>Datum zadání</th>
+                        <th>Cena</th>
+                        <th>Množství</th>
+                        <th>Název inzerátu</th>
+                        <th>Text</th>
+                        <th>Lokalita</th>
+                        <th>Zdroj</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for item in o_list %}
+                        <tr>
+                            <td>{% if item.word %}{{item.word}}{% endif%} {% if item.search %}{{item.search}}{% endif%}</td>
+                            <td>{{item.created|date:"Y/m/d"}}</td>
+                            <td>{{item.price}} {% if item.currency != "neuvedeno" %}{{item.currency}}{% endif%}</td>
+                            <td>{{item.quantity}} {% if item.units != "neuvedeno" %}{{item.units}}{% endif%}</td>
+                            <td>
+                                {% if item.name_offer != "N/A" %}
+                                    <a href="{{item.url}}" class="
+                                        btn btn-light btn-sm
+                                        d-inline-flex
+                                        align-items-center
+                                        justify-content-center"
+                                        target="_blank"
+                                        data-toggle="tooltip" data-bs-placement="bottom" title="{{item.name_offer}}" data-bs-original-title="">
+                                        {{item.name_offer|truncatewords:5}}
+                                    </a>
+                                {% endif%}
+                            </td>
+                            <td>
+                                <a href="{{item.url}}" class="
+                                    btn btn-light btn-sm
+                                    d-inline-flex
+                                    align-items-center
+                                    justify-content-center"
+                                    target="_blank"
+                                    data-toggle="tooltip" data-bs-placement="bottom" title="{{item.fulltext}}" data-bs-original-title="">
+                                    {{item.fulltext|truncatewords:10}}
+                                </a>
+                            </td>
+                            <td>
+                                <span {% if item.locality.coordinates_LAT and item.locality.coordinates_LAT %}
+                                      style="color: forestgreen;"
+                                      data-toggle="tooltip" data-bs-placement="bottom" title="{{item.locality.coordinates_LAT}}, {{item.locality.coordinates_LON}}" data-bs-original-title=""
+                                      {% endif%}
+                                      >
+                                    {{item.locality.city}}{% if item.locality.street %}, {{item.locality.street}}{% endif%}
+                                </span>
+                            </td>
+                            <td>{{item.source}}</td>
+                        </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+          {% endif %}
+        </div>
+    </div>
+
+
+{% endblock content%}
+
+{%block scripts_block%}
+
+    <script>
+        $(document).ready(function () {
+            $('#offer_list').DataTable({
+                order: [[1, 'desc']],
+                paging: true,
+                ordering: true,
+                info: true,
+                pagingType: 'full_numbers',
+                "language": {
+                    "paginate": {
+                      "first": "První",
+                      "previous": "Předchozí",
+                      "next": "Následující",
+                      "last": "Poslední"
+                    },
+                    "search": "Hledat:",
+                    "info": "Nabídky _START_ až _END_ z celkem _TOTAL_ výsledků",
+                    "emptyTable": "Žádná dostupná data",
+                    "lengthMenu": "Ukázat _MENU_ výsledků",
+                    "infoFiltered": "(vyfiltrováno z celkem _MAX_ výsledků)",
+                    "thousands": " ",
+                  }
+            });
+        });
+    </script>
+
+  {% endblock scripts_block %}

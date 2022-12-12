@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% load bootstrap5 %}
+
+{% block content%}
+    <div class="card">
+        <div class="border-bottom title-part-padding">
+            <h2 class="card-title mb-0">
+                KRILOG
+            </h2>
+        </div>
+        <div class="card-body">
+            <p>
+                {{text.Home_text|safe}}
+            </p>
+            <a href="admin/">Admin</a>
+        </div>
+
+    </div>
+
+{% endblock content%}
